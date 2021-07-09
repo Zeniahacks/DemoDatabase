@@ -46,7 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
 
     }
-    public void insertTask(String description, String date) {
+    public long insertTask(String description, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -55,9 +55,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put(COLUMN_DATE, date);
 
-        db.insert(TABLE_TASK, null, values);
+        long result = db.insert(TABLE_TASK, null, values);
 
         db.close();
+
+        return result;
     }
 
     public ArrayList<String> getTaskContent() {
@@ -65,12 +67,12 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<String> tasks = new ArrayList<String>();
         // Select all the tasks' description
         String selectQuery = "SELECT " + COLUMN_DESCRIPTION
-                + " FROM " + TABLE_TASK;
+                + " FROM " + TABLE_TASK + " ORDER BY description ASC";
 
         // Get the instance of database to read
         SQLiteDatabase db = this.getReadableDatabase();
         // Run the SQL query and get back the Cursor object
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(selectQuery, null, null);
 
         // moveToFirst() moves to first row, null if no records
         if (cursor.moveToFirst()) {
@@ -93,11 +95,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        String selectQuery = "SELECT " + COLUMN_ID + ", " + COLUMN_DESCRIPTION + ", " + COLUMN_DATE + "FROM " + TABLE_TASK;
+        ArrayList<Task> tasks = new ArrayList<>();
+        String selectQuery = "SELECT " + COLUMN_ID + ", " + COLUMN_DESCRIPTION + ", " + COLUMN_DATE + " FROM " + TABLE_TASK + " ORDER BY description ASC";
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(selectQuery, null, null);
 
         if(cursor.moveToFirst()) {
             do {
@@ -105,7 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 String description = cursor.getString(1);
                 String date = cursor.getString(2);
 
-                Task obj = new Task(id, description,date);
+                Task obj = new Task(id, description, date);
                 tasks.add(obj);
             } while (cursor.moveToNext());
         }

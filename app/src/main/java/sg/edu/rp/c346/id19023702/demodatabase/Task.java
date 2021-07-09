@@ -1,11 +1,19 @@
 package sg.edu.rp.c346.id19023702.demodatabase;
 
-public class Task {
+import java.io.Serializable;
+
+public class Task implements Serializable {
     private int _id;
     private String description;
     private String date;
 
-    public Task(int _id, String description, String date) {
+    // DB INSERTION
+    public Task(String description, String date) {
+        this.description = description;
+        this.date = date;
+    }
+
+    public Task(int _id,String description, String date) {
         this._id = _id;
         this.description = description;
         this.date = date;
@@ -21,5 +29,14 @@ public class Task {
 
     public String getDate() {
         return date;
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                ", id=" + _id +
+                ", description=" + description +
+                ", date=" + date +
+                '}';
     }
 }
